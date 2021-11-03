@@ -8,11 +8,21 @@ template.innerHTML = `
   text-decoration: line-through;
   color: #aaa; 
 }
+.hide {
+  /* display: none; */
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.3s;
+}
+.remvoeButton {
+  visibility: visible;
+  opacity: 1;
+}
 </style>
 <li class="item">
   <input class="checkbox" type="checkbox">
   <label contenteditable class="title"></label>
-  <button class="removeButton">x</button>
+  <button class="removeButton hide">🗑</button>
 </li>
 `;
 
@@ -70,6 +80,14 @@ export default class ItemOne extends HTMLElement {
     this.$checkbox = this._root.querySelector('.checkbox');
     this.$title = this._root.querySelector('.title');
     this.$removeButton = this._root.querySelector('.removeButton');
+
+    this.$item.addEventListener('mouseover', (e) => {
+      this.$removeButton.classList.remove('hide');
+    });
+
+    this.$item.addEventListener('mouseleave', (e) => {
+      this.$removeButton.classList.add('hide');
+    });
 
     this.$checkbox.addEventListener('click', (e) => {
       e.preventDefault();
