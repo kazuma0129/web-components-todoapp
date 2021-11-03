@@ -1,5 +1,6 @@
 import * as todoStore from '../shared/store/todo';
 import * as categoryStore from '../shared/store/category';
+import * as filterStore from '../shared/store/filter';
 import { TODO_STATUS_DEFAULT } from '../shared/constant';
 
 const template = document.createElement('template');
@@ -57,7 +58,7 @@ export default class Todo extends HTMLElement {
     this._categories = categoryStore.findAllCustom();
     this._beforeClickCategory = '';
 
-    this._filter = TODO_STATUS_DEFAULT[1]; // default filter status
+    this._filter = filterStore.findOne() || TODO_STATUS_DEFAULT[1];
   }
 
   onCategoryClick(e) {
@@ -74,6 +75,7 @@ export default class Todo extends HTMLElement {
   onToggleFilter(e) {
     e.preventDefault();
     this._filter = this.$todoListFilter.value;
+    filterStore.upsert(this._filter);
     this._render();
   }
 
