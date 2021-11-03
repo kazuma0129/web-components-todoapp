@@ -11,6 +11,3 @@ import CategoryList from './components/category-list';
 import CategoryOne from './components/category-one';
 window.customElements.define('category-list', CategoryList);
 window.customElements.define('category-one', CategoryOne);
-
-import ButtonCircle from './components/button-circle';
-window.customElements.define('button-circle', ButtonCircle);
