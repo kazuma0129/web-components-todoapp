@@ -40,5 +40,5 @@ export const findAll = () => {
 };
 
 export const findByCategory = (category) => {
-  return store.findItemsByPrefix(category);
+  return store.findItemsByPrefixes(category);
 };
