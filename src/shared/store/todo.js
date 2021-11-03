@@ -36,7 +36,7 @@ export const updateOneDiff = (category, title, updateObj) => {
 };
 
 export const findAll = () => {
-  return store.listAllItems();
+  return store.findItemsByPrefixes();
 };
 
 export const findByCategory = (category) => {
