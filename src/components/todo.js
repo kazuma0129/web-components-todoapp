@@ -1,5 +1,6 @@
 import * as todoStore from '../shared/store/todo';
-import { CATEGORIES_DEFAULT, TODO_STATUS_DEFAULT } from '../shared/constant';
+import * as categoryStore from '../shared/store/category';
+import { TODO_STATUS_DEFAULT } from '../shared/constant';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -53,7 +54,7 @@ export default class Todo extends HTMLElement {
     super();
     this._root = this.attachShadow({ mode: 'open' });
 
-    this._categories = CATEGORIES_DEFAULT;
+    this._categories = categoryStore.findAllCustom();
     this._beforeClickCategory = '';
 
     this._filter = TODO_STATUS_DEFAULT[1]; // default filter status
@@ -62,7 +63,7 @@ export default class Todo extends HTMLElement {
   onCategoryClick(e) {
     if (this._beforeClickCategory === e.detail.categoryName) {
       this._beforeClickCategory = '';
-      this._categories = CATEGORIES_DEFAULT;
+      this._categories = categoryStore.findAllCustom();
     } else {
       this._beforeClickCategory = e.detail.categoryName;
       this._categories = [e.detail.categoryName];
@@ -95,6 +96,9 @@ export default class Todo extends HTMLElement {
       'onCategoryClick',
       this.onCategoryClick.bind(this)
     );
+    this.$categoryList.addEventListener('onCategorySubmit', (e) => {
+      this._render();
+    });
 
     this._render();
   }
@@ -126,7 +130,6 @@ export default class Todo extends HTMLElement {
       const $option = document.createElement('option');
       $option.setAttribute('value', status);
       $option.textContent = status;
-      console.log({ status });
       this.$todoListFilter.appendChild($option);
     });
     this.$todoListFilter.value = this._filter;

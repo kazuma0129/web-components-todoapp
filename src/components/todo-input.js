@@ -1,5 +1,5 @@
+import * as categoryStore from '../shared/store/category';
 import * as textServices from '../shared/services/text';
-import { CATEGORIES_DEFAULT } from '../shared/constant';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -15,6 +15,8 @@ export default class TodoInput extends HTMLElement {
   constructor() {
     super();
     this._root = this.attachShadow({ mode: 'open' });
+
+    this._categories = categoryStore.findAllCustom();
 
     this._category = this.category;
   }
@@ -66,7 +68,7 @@ export default class TodoInput extends HTMLElement {
   }
 
   _render() {
-    CATEGORIES_DEFAULT.forEach((category) => {
+    this._categories.forEach((category) => {
       const $option = document.createElement('option');
       $option.setAttribute('value', category);
       $option.textContent = category;
