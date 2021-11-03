@@ -62,7 +62,7 @@ export default class Todo extends HTMLElement {
   onCategoryClick(e) {
     if (this._beforeClickCategory === e.detail.categoryName) {
       this._beforeClickCategory = '';
-      this._categories = CATEGORIES;
+      this._categories = CATEGORIES_DEFAULT;
     } else {
       this._beforeClickCategory = e.detail.categoryName;
       this._categories = [e.detail.categoryName];
