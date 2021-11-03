@@ -97,6 +97,8 @@ export default class Todo extends HTMLElement {
       this.onCategoryClick.bind(this)
     );
     this.$categoryList.addEventListener('onCategorySubmit', (e) => {
+      this.$input.setAttribute('category-added', '');
+      this._categories = categoryStore.findAllCustom();
       this._render();
     });
 

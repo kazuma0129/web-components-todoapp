@@ -19,10 +19,11 @@ export default class TodoInput extends HTMLElement {
     this._categories = categoryStore.findAllCustom();
 
     this._category = this.category;
+    this._categoryAdded = '';
   }
 
   static get observedAttributes() {
-    return ['category'];
+    return ['category', 'category-added'];
   }
 
   attributeChangedCallback(name, oldVal, newVal) {
@@ -30,6 +31,10 @@ export default class TodoInput extends HTMLElement {
       case 'category':
         this._category = newVal;
         this.$select.value = this._category;
+        break;
+      case 'category-added':
+        this._categories = categoryStore.findAllCustom();
+        this._render();
         break;
     }
   }

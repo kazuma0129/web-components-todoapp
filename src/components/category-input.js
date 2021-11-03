@@ -36,6 +36,8 @@ export default class CategoryList extends HTMLElement {
 
     this.dispatchEvent(
       new CustomEvent('onCategorySubmit', {
+        bubbles: true,
+        composed: true,
         detail: {
           name: this.$input.value,
         },
