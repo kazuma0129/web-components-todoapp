@@ -9,5 +9,7 @@ window.customElements.define('todo-list', TodoList);
 
 import CategoryList from './components/category-list';
 import CategoryOne from './components/category-one';
+import CategoryInput from './components/category-input';
 window.customElements.define('category-list', CategoryList);
 window.customElements.define('category-one', CategoryOne);
+window.customElements.define('category-input', CategoryInput);
