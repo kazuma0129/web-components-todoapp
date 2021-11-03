@@ -1,4 +1,4 @@
-const CATEGORIES = ['Work', 'Movie', 'Idea', 'Shop'];
+import { CATEGORIES_DEFAULT } from '../shared/constant';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -44,7 +44,7 @@ export default class CategoryList extends HTMLElement {
   }
 
   _render() {
-    CATEGORIES.forEach((categoryName) => {
+    CATEGORIES_DEFAULT.forEach((categoryName) => {
       const $categoryItem = document.createElement('category-one');
       $categoryItem.setAttribute('category-name', categoryName);
       $categoryItem.addEventListener(

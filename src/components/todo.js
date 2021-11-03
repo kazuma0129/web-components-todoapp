@@ -1,8 +1,5 @@
 import * as todoStore from '../shared/store/todo';
-
-const CATEGORIES = ['Work', 'Movie', 'Idea', 'Shop'];
-
-const STATUS = ['all', 'yet', 'done'];
+import { CATEGORIES_DEFAULT, TODO_STATUS_DEFAULT } from '../shared/constant';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -12,9 +9,9 @@ section {
   grid-gap: 10px;
   /* grid-template-columns: 200px 200px 200px; */
   grid-template-areas:
-  "header  header  header"
-  "sidebar content content"
-  "footer  footer  footer";
+  "header  header"
+  "sidebar content"
+  "footer  footer";
   background-color: #fff;
 }
 
@@ -44,9 +41,6 @@ section {
       <todo-input></todo-input>
       <span>filter status</span>
       <select class="todo-list-filter">
-        <option>all</option>
-        <option>yet</option>
-        <option>done</option>
       </select>
     </div>
     <ul class="todo-list-container" ></ul>
@@ -59,10 +53,10 @@ export default class Todo extends HTMLElement {
     super();
     this._root = this.attachShadow({ mode: 'open' });
 
-    this._categories = CATEGORIES;
+    this._categories = CATEGORIES_DEFAULT;
     this._beforeClickCategory = '';
 
-    this._filter = 'yet'; // default filter status
+    this._filter = TODO_STATUS_DEFAULT[1]; // default filter status
   }
 
   onCategoryClick(e) {
@@ -90,7 +84,6 @@ export default class Todo extends HTMLElement {
 
     this.$todoListContainer = this._root.querySelector('.todo-list-container');
     this.$todoListFilter = this._root.querySelector('.todo-list-filter');
-    this.$todoListFilter.value = this._filter;
 
     this.$todoListFilter.addEventListener(
       'change',
@@ -123,6 +116,20 @@ export default class Todo extends HTMLElement {
 
     // 毎回リスト毎に再度レンダリングしているのでリファクタしたい
     this.$todoListContainer.innerHTML = '';
+    this.$todoListFilter.innerHTML = '';
+
+    if (this._categories.length === 1) {
+      this.$input.setAttribute('category', this._categories[0]);
+    }
+
+    TODO_STATUS_DEFAULT.forEach((status) => {
+      const $option = document.createElement('option');
+      $option.setAttribute('value', status);
+      $option.textContent = status;
+      console.log({ status });
+      this.$todoListFilter.appendChild($option);
+    });
+    this.$todoListFilter.value = this._filter;
 
     this._categories.forEach((category) => {
       const $todoList = document.createElement('todo-list');
