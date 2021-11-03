@@ -1,4 +1,4 @@
-import { isURL, isHTTPS } from '../shared/helper/url';
+import { isURL, isHTTPS } from '../helper/url';
 
 export const validate = (text) => {
   if (!text) {
