@@ -1,5 +1,5 @@
 import { STORE_KEY_DELIMITER } from '../constant';
-
+import { parse } from '../helper/json';
 export default class Store {
   constructor(keyPrefix) {
     this.keyPrefix = keyPrefix;
@@ -10,10 +10,8 @@ export default class Store {
       if (typeof key != 'string') {
         return ret;
       }
-      return index === keys.length - 1
-        ? `${ret}${key}`
-        : `${ret}${key}${STORE_KEY_DELIMITER}`;
-    }, `${this.keyPrefix}${STORE_KEY_DELIMITER}`);
+      return `${ret}${STORE_KEY_DELIMITER}${key}`;
+    }, `${this.keyPrefix}`);
   }
 
   listAllItems() {
@@ -22,19 +20,15 @@ export default class Store {
       const key = localStorage.key(i);
       results.push({
         key,
-        val: JSON.parse(localStorage.getItem(key)),
+        val: this.getItem(key),
       });
     }
     return results;
   }
 
-  removeAllItems() {
-    localStorage.clear();
-  }
-
   getItem(key) {
     const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : null;
+    return data ? parse(data) : null;
   }
 
   setItem(key, val) {
@@ -53,6 +47,10 @@ export default class Store {
     if (!before) {
       return new Error(`not found. ${key}`);
     }
+    if (typeof val !== 'object') {
+      this.setItem(key, val);
+      return;
+    }
     this.setItem(key, { ...before, ...val });
   }
 
@@ -61,19 +59,23 @@ export default class Store {
     for (let i in localStorage) {
       if (localStorage.hasOwnProperty(i)) {
         if (i.match(query) || (!query && typeof i === 'string')) {
-          results.push({ key: i, val: JSON.parse(localStorage.getItem(i)) });
+          results.push({ key: i, val: this.getItem(i) });
         }
       }
     }
     return results;
   }
 
-  findItemsByPrefix(...prefixes) {
+  findItemsByPrefixes(...prefixes) {
     const query = this.genKey(...prefixes);
     return this.findItems(query);
   }
 
   removeItem(key) {
     localStorage.removeItem(key);
+  }
+
+  removeAllItems() {
+    localStorage.clear();
   }
 }
