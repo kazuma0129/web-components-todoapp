@@ -1,33 +1,36 @@
 import Store from './base';
-import { STORE_KEY_PREFIX_CATEGORY } from '../constant';
+import { STORE_KEY_PREFIX_CATEGORY, CATEGORIES_DEFAULT } from '../constant';
+
 const store = new Store(STORE_KEY_PREFIX_CATEGORY);
 
-export const genKey = (...keys) => {
-  return keys.reduce((ret, key, index) => {
-    return index === keys.length - 1
-      ? `${ret}${key}`
-      : `${ret}${key}${STORE_KEY_DELIMITER}`;
-  }, `${store.keyPrefix}${STORE_KEY_DELIMITER}`);
+export const genKey = (name) => {
+  return store.genKey(name);
 };
 
-export const findOne = (category, title) => {
-  const key = genKey(category, title);
+export const findOne = (name) => {
+  const key = genKey(name);
   return store.getItem(key);
 };
 
-export const removeOne = (category, title) => {
-  const key = genKey(category, title);
+export const removeOne = (name) => {
+  const key = genKey(name);
   return store.removeItem(key);
 };
 
-export const removeMany = () => {};
+export const createOne = ({ name }) => {
+  const key = genKey(name);
+  return store.setItem(key, { name });
+};
 
-export const createOne = () => {};
+export const updateOneDiff = (name, updateObj) => {
+  const before = findOne(name);
+  if (!before) {
+    return new Error(`not found. ${name}`);
+  }
+  removeOne(name);
+  return createOne({ ...before, ...updateObj });
+};
 
-export const createMany = () => {};
-
-export const updateOne = () => {};
-
-export const updateOneDiff = () => {};
-
-export const find = () => {};
+export const findAllCustom = (fn = (c) => c.val.name) => {
+  return [...CATEGORIES_DEFAULT, ...store.findItemsByPrefixes().map(fn)];
+};
