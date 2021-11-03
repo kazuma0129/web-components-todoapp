@@ -1,4 +1,4 @@
-import { CATEGORIES_DEFAULT } from '../shared/constant';
+import * as categoryStore from '../shared/store/category';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -20,13 +20,46 @@ export default class CategoryList extends HTMLElement {
     super();
     this._root = this.attachShadow({ mode: 'open' });
     this.beforeElement = '';
+
+    this._categories = categoryStore.findAllCustom();
   }
 
   connectedCallback() {
     this._root.appendChild(template.content.cloneNode(true));
 
     this.$categoryList = this._root.querySelector('ul');
+
+    this.$section = this._root.querySelector('section');
+
+    this.$categoryAddButton = document.createElement('button');
+    this.$categoryAddButton.setAttribute('class', 'categoryAddButton');
+    this.$categoryAddButton.textContent = '➕';
+    this.$categoryAddButton.addEventListener('click', (e) => {
+      this.$categoryList.appendChild(this.createCategoryInputElement());
+      this.$section.removeChild(this.$categoryAddButton);
+    });
+
+    this.$section.appendChild(this.$categoryAddButton);
+
     this._render();
+  }
+
+  createCategoryInputElement() {
+    const $categoryInput = document.createElement('category-input');
+    $categoryInput.addEventListener(
+      'onCategorySubmit',
+      this.onCategorySubmit.bind(this)
+    );
+    return $categoryInput;
+  }
+
+  onCategorySubmit(e) {
+    categoryStore.createOne({ name: e.detail.name });
+    this.$categoryList.removeChild(this.$categoryList.lastChild);
+    this.$categoryList.appendChild(
+      this.createCategoryItemElement(e.detail.name)
+    );
+    this.$section.appendChild(this.$categoryAddButton);
   }
 
   onCategoryClick(e) {
@@ -43,15 +76,22 @@ export default class CategoryList extends HTMLElement {
     this.beforeElement = $categoryItem;
   }
 
+  createCategoryItemElement(categoryName) {
+    const $categoryItem = document.createElement('category-one');
+    $categoryItem.setAttribute('category-name', categoryName);
+    $categoryItem.addEventListener(
+      'onCategoryClick',
+      this.onCategoryClick.bind(this)
+    );
+    return $categoryItem;
+  }
+
   _render() {
-    CATEGORIES_DEFAULT.forEach((categoryName) => {
-      const $categoryItem = document.createElement('category-one');
-      $categoryItem.setAttribute('category-name', categoryName);
-      $categoryItem.addEventListener(
-        'onCategoryClick',
-        this.onCategoryClick.bind(this)
+    this.$categoryList.innerHTML = '';
+    this._categories.forEach((categoryName) => {
+      this.$categoryList.appendChild(
+        this.createCategoryItemElement(categoryName)
       );
-      this.$categoryList.appendChild($categoryItem);
     });
   }
 }
